@@ -6,7 +6,7 @@
 <p class="lead">CW1 交设计 PPT，CW2 实现并部署 CW1 的设计。两者共用一个 Azure 订阅、一个 GitHub 账号和一个 Azure DevOps 组织即可。</p>
 <nav><a href="#accounts">账号怎么开</a><a href="#local">本地使用</a><a href="#cloud">云端部署</a><a href="#evidence">提交前验证</a></nav>
 <table><tr><th>场景</th><th>需要多少账号</th></tr><tr><td>同一个人完成 CW1 + CW2</td><td>一套即可。Azure 与 Azure DevOps 可用同一个 Microsoft 账号登录，再注册一个 GitHub 账号。</td></tr><tr><td>同一个人试做两个不同选题</td><td>可共享同一个订阅。分别使用资源组、GitHub 仓库和 Pipeline，费用合计使用同一份额度。</td></tr><tr><td>两位同学各交一套独立作业</td><td>建议各用自己的账号和订阅，分别保留本人部署、提交和流水线证据。</td></tr></table>
-<div class="status"><strong>2026-10-26 部署状态：</strong>BookShare 已部署到 France Central，两个 API 连接已连通，六个工作流已启用。学生在 Cloud Shell 执行的 15 项真实 HTTP 检查通过，覆盖 CRUD、文件字节、Function 检查与 Translator。公网网页、健康接口、跨域预检和 PDF.js 资源也已检查通过。GitHub / Azure DevOps 构建、浏览器预览及 Portal 证据核对、本人视频待完成。<br><a href="https://booksharenpvsnrw3.z28.web.core.windows.net">打开实际网站</a> · <a href="https://bookshare-npvsnrw3-api.azurewebsites.net/api/health">健康接口</a> · <a href="https://github.com/Dailingxiang1/bookshare">目标 GitHub 仓库</a></div>
+<div class="status"><strong>2026-10-26 部署状态：</strong>BookShare 已部署到 France Central，两个 API 连接已连通，六个工作流已启用。学生在 Cloud Shell 执行的 15 项真实 HTTP 检查通过，覆盖 CRUD、文件字节、Function 检查与 Translator。公网网页、健康接口、跨域预检和 PDF.js 资源也已检查通过。GitHub 源码已提交，Azure DevOps 实际构建、浏览器预览及 Portal 证据核对、本人视频待完成。<br><a href="https://booksharenpvsnrw3.z28.web.core.windows.net">打开实际网站</a> · <a href="https://bookshare-npvsnrw3-api.azurewebsites.net/api/health">健康接口</a> · <a href="https://github.com/Dailingxiang1/bookshare">GitHub 源码仓库</a></div>
 
 <h2 id="accounts">先开通账号，按这个顺序</h2>
 <h3>1. Azure 学生订阅</h3>
@@ -39,11 +39,11 @@ az account show
 az account set --subscription YOUR_SUBSCRIPTION_ID</pre>
 <p>选择该学生订阅实际允许的区域，资源组使用项目专用名称，例如 <code>bookshare-coursework</code>。模板使用 Standard LRS Storage、Cosmos NoSQL serverless、Windows Consumption Function 和 Translator F0。F0 已占用时会失败，不会自动切换到收费 S1。消费型资源仍可能消耗学生额度，应在 Cost Management 中设置资源组预算提醒。</p>
 <h3>B. 部署基础资源</h3>
-<pre># 请把 eastus 换成该学生订阅实际允许的区域
-./scripts/Deploy-Resources.ps1 -ResourceGroup bookshare-coursework -Location eastus -Apply
+<pre># 本次学生订阅允许 francecentral；其他订阅应先核对实际区域策略
+./scripts/Deploy-Resources.ps1 -ResourceGroup bookshare-coursework -Location francecentral -Apply
 
 # 资源组已经存在时，可先进行 Validate / what-if
-./scripts/Deploy-Resources.ps1 -ResourceGroup bookshare-coursework -Location eastus</pre>
+./scripts/Deploy-Resources.ps1 -ResourceGroup bookshare-coursework -Location francecentral</pre>
 <p>模板 <code>infra/main.json</code> 创建私有 <code>assets</code> 容器、Cosmos <code>bookshare/assets</code>（NoSQL API，分区键 <code>/id</code>）、Function 及 Translator。订阅服务策略造成失败时，应查看明确报错后调整区域或申请课程资源，不要换成 MongoDB API。</p>
 <h3>C–D. Cloud Shell 连接与六条工作流</h3>
 <p>在 Cloud Shell（PowerShell）上传交付目录中的 <code>BookShare_CloudShell_v3.zip</code>，解压到 <code>$HOME/bookshare-deploy</code>。脚本会从已有成功部署读取资源信息，读取实际 Connector 认证元数据，以 <code>export=true</code> 导出真实 Swagger，再生成连接与工作流。</p>

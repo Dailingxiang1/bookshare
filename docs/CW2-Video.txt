@@ -2,7 +2,7 @@ BookShare — Coursework 2 video preparation
 Student: 祝德阳 202315030125
 
 录制目标：一段不超过 5 分钟的个人演示，展示真实 Azure 部署、完整 CRUD、GitHub -> Azure DevOps 构建和两个高级功能。
-当前状态（2026-10-26）：Azure 部署完成，两个连接 Connected，六个工作流 Enabled/Succeeded，15 项真实云端 HTTP 检查通过；GitHub/Azure DevOps 构建、浏览器/Portal 证据核对与本人视频待完成。
+当前状态（2026-10-26）：Azure 部署完成，两个连接 Connected，六个工作流 Enabled/Succeeded，15 项真实云端 HTTP 检查通过；GitHub 源码已提交；Azure DevOps 构建、浏览器/Portal 证据核对与本人视频待完成。
 实际网站：https://booksharenpvsnrw3.z28.web.core.windows.net
 公开 API：https://bookshare-npvsnrw3-api.azurewebsites.net
 GitHub：https://github.com/Dailingxiang1/bookshare

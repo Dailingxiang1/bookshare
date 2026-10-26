@@ -50,8 +50,8 @@ HTTP 检查之外，还需要在 Portal 核对 Blob/Cosmos 删除结果及工作
 本地演示使用文件存储适配器，不会声称已连接 Azure。
 实际网站：https://booksharenpvsnrw3.z28.web.core.windows.net
 健康接口：https://bookshare-npvsnrw3-api.azurewebsites.net/api/health
-GitHub 目标仓库：https://github.com/Dailingxiang1/bookshare
-待完成：GitHub 源码提交、Azure DevOps 实际成功构建、浏览器预览及 Portal 证据核对、本人录制视频。
+GitHub 源码仓库（已上传）：https://github.com/Dailingxiang1/bookshare
+待完成：Azure DevOps 实际成功构建、浏览器预览及 Portal 证据核对、本人录制视频。
 CW2 必须完成这些真实云端环节，不能只提交本地网页或这份源码。
 
 项目边界

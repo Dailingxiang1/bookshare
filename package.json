@@ -12,7 +12,7 @@
     "build": "node scripts/build.cjs",
     "test": "node --test tests/*.test.cjs",
     "check": "node scripts/check.cjs",
-    "test:ci": "node --test --test-reporter=junit --test-reporter-destination=reports/junit.xml tests/*.test.cjs",
+    "test:ci": "node scripts/test-ci.cjs",
     "prestart": "node scripts/prepare-vendor.cjs",
     "pretest": "node scripts/prepare-vendor.cjs",
     "pretest:ci": "node scripts/prepare-vendor.cjs"

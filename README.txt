@@ -29,7 +29,7 @@ npm run test:ci
 npm run build
 2026-10-26：Node.js 22.23.3 的 35 项测试通过；JUnit 结果写入 reports/junit.xml。Azure 适配器单元测试仍使用模拟传输，另有实际云端检查。
 Azure Functions SDK 在单元测试中显示 test mode 提示属正常现象。
-2026-10-26：学生在实际 Azure Cloud Shell 执行 Verify，15 项云端 HTTP 检查通过，包括完整 CRUD、文件字节、Function 检查和 Translator。另行检查网站、健康接口、浏览器 CORS 预检及 PDF.js 资源均成功。Azure DevOps 实际构建仍待完成。
+2026-10-26：学生在实际 Azure Cloud Shell 执行 Verify，15 项云端 HTTP 检查通过，包括完整 CRUD、文件字节、Function 检查和 Translator。另行检查网站、健康接口、浏览器 CORS 预检及 PDF.js 资源均成功。Azure DevOps 自动构建 20261026.2 已成功，代码提交 e6ab6ed8，耗时 28 秒，发布 1 个前端产物。
 
 云端结构
 web/                 静态前端，构建后部署到 Azure Storage $web
@@ -51,7 +51,9 @@ HTTP 检查之外，还需要在 Portal 核对 Blob/Cosmos 删除结果及工作
 实际网站：https://booksharenpvsnrw3.z28.web.core.windows.net
 健康接口：https://bookshare-npvsnrw3-api.azurewebsites.net/api/health
 GitHub 源码仓库（已上传）：https://github.com/Dailingxiang1/bookshare
-待完成：Azure DevOps 实际成功构建、浏览器预览及 Portal 证据核对、本人录制视频。
+实际成功构建：https://dev.azure.com/Zhu-D/zhudeyang-coursework/_build/results?buildId=2&view=results
+构建对应的代码：https://github.com/Dailingxiang1/bookshare/tree/e6ab6ed8ade7a246e2e5746010ff0a7e88efecca
+待完成：浏览器预览及 Portal 证据核对、本人录制视频。
 CW2 必须完成这些真实云端环节，不能只提交本地网页或这份源码。
 
 项目边界

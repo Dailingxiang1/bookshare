@@ -6,7 +6,7 @@
 <p class="lead">CW1 交设计 PPT，CW2 实现并部署 CW1 的设计。两者共用一个 Azure 订阅、一个 GitHub 账号和一个 Azure DevOps 组织即可。</p>
 <nav><a href="#accounts">账号怎么开</a><a href="#local">本地使用</a><a href="#cloud">云端部署</a><a href="#evidence">提交前验证</a></nav>
 <table><tr><th>场景</th><th>需要多少账号</th></tr><tr><td>同一个人完成 CW1 + CW2</td><td>一套即可。Azure 与 Azure DevOps 可用同一个 Microsoft 账号登录，再注册一个 GitHub 账号。</td></tr><tr><td>同一个人试做两个不同选题</td><td>可共享同一个订阅。分别使用资源组、GitHub 仓库和 Pipeline，费用合计使用同一份额度。</td></tr><tr><td>两位同学各交一套独立作业</td><td>建议各用自己的账号和订阅，分别保留本人部署、提交和流水线证据。</td></tr></table>
-<div class="status"><strong>2026-10-26 部署状态：</strong>BookShare 已部署到 France Central，两个 API 连接已连通，六个工作流已启用。学生在 Cloud Shell 执行的 15 项真实 HTTP 检查通过，覆盖 CRUD、文件字节、Function 检查与 Translator。公网网页、健康接口、跨域预检和 PDF.js 资源也已检查通过。GitHub 源码已提交，Azure DevOps 实际构建、浏览器预览及 Portal 证据核对、本人视频待完成。<br><a href="https://booksharenpvsnrw3.z28.web.core.windows.net">打开实际网站</a> · <a href="https://bookshare-npvsnrw3-api.azurewebsites.net/api/health">健康接口</a> · <a href="https://github.com/Dailingxiang1/bookshare">GitHub 源码仓库</a></div>
+<div class="status"><strong>2026-10-26 部署状态：</strong>BookShare 已部署到 France Central，两个 API 连接已连通，六个工作流已启用。学生在 Cloud Shell 执行的 15 项真实 HTTP 检查通过，覆盖 CRUD、文件字节、Function 检查与 Translator。公网网页、健康接口、跨域预检和 PDF.js 资源也已检查通过。GitHub 源码已提交，Azure DevOps 自动构建 <a href="https://dev.azure.com/Zhu-D/zhudeyang-coursework/_build/results?buildId=2&amp;view=results">20261026.2</a> 已成功，代码提交 e6ab6ed8，发布 1 个前端产物。浏览器预览、Portal 证据核对和本人视频待完成。<br><a href="https://booksharenpvsnrw3.z28.web.core.windows.net">打开实际网站</a> · <a href="https://bookshare-npvsnrw3-api.azurewebsites.net/api/health">健康接口</a> · <a href="https://github.com/Dailingxiang1/bookshare">GitHub 源码仓库</a></div>
 
 <h2 id="accounts">先开通账号，按这个顺序</h2>
 <h3>1. Azure 学生订阅</h3>
@@ -61,7 +61,7 @@ az account set --subscription YOUR_SUBSCRIPTION_ID</pre>
 
 <h2 id="evidence">CW2 提交前必须真实验证</h2>
 <ol><li>云端网址能打开，页脚显示云端空间。刷新后资料依然存在。</li><li>上传一份原创 PDF 和一张允许分享的 PNG / JPEG，验证预览、下载字节与元数据。</li><li>修改标题和说明。删除一份专门的演示文件，确认 Cosmos 记录及 Blob 都已移除。</li><li>在 Portal 展示 IUPS / RIPS / UIPS / DIPS 成功的实际运行记录，说明 API URI 与分区键。</li><li>实际调用 Azure Function 文件检查接口，展示大小和 SHA-256；实际点击描述翻译并展示真实 Azure Translator 结果。</li><li>展示 GitHub commit 与成功的 Azure DevOps 前端构建，解释 Function 网关相对 CW1 核心架构的增加。</li><li>本人录制不超过 5 分钟的演示视频。录制安排见 <code>CW2-Video.txt</code>，不要把签名、密钥或管理口令录进去。</li></ol>
-<p>CW1 的 PPT 已覆盖 15 页设计内容及额外的原文提交检查表。BookShare 已完成 Azure 部署和 HTTP 功能验证；CW2 还需保留真实 Pipeline 构建、浏览器预览和 Portal 运行证据，并由本人完成视频。</p>
+<p>CW1 的 PPT 已覆盖 15 页设计内容及额外的原文提交检查表。BookShare 已完成 Azure 部署、HTTP 功能验证和实际 Pipeline 自动构建。成功构建对应 <a href="https://github.com/Dailingxiang1/bookshare/tree/e6ab6ed8ade7a246e2e5746010ff0a7e88efecca">e6ab6ed8 代码提交</a>。本地交付目录已保存成功总览截图；接下来核对浏览器预览、Portal 运行证据并由本人完成视频。</p>
 
 <h2>实现边界与后续改进</h2>
 <p>每份文件不超过 5 MiB。当前列表以 100 条 Connector 页面为目标，最多跟进 20 页，超过上限返回明确错误。大型目录需要游标分页和服务器搜索。修改仅更新元数据，文件替换通过新建资料完成。Blob 和 Cosmos 没有跨服务事务，失败的回滚或删除需要检查工作流并清理孤立文件。共享口令适合小型演示，正式多用户系统应增加身份、角色、审核和病毒扫描。</p>

@@ -2,10 +2,12 @@ BookShare — Coursework 2 video preparation
 Student: 祝德阳 202315030125
 
 录制目标：一段不超过 5 分钟的个人演示，展示真实 Azure 部署、完整 CRUD、GitHub -> Azure DevOps 构建和两个高级功能。
-当前状态（2026-10-26）：Azure 部署完成，两个连接 Connected，六个工作流 Enabled/Succeeded，15 项真实云端 HTTP 检查通过；GitHub 源码已提交；Azure DevOps 构建、浏览器/Portal 证据核对与本人视频待完成。
+当前状态（2026-10-26）：Azure 部署完成，两个连接 Connected，六个工作流 Enabled/Succeeded，15 项真实云端 HTTP 检查通过；GitHub 源码已提交；Azure DevOps 自动构建 20261026.2 已成功，发布 1 个前端产物；浏览器/Portal 证据核对与本人视频待完成。
 实际网站：https://booksharenpvsnrw3.z28.web.core.windows.net
 公开 API：https://bookshare-npvsnrw3-api.azurewebsites.net
 GitHub：https://github.com/Dailingxiang1/bookshare
+成功构建：https://dev.azure.com/Zhu-D/zhudeyang-coursework/_build/results?buildId=2&view=results
+视频中对应的代码提交：https://github.com/Dailingxiang1/bookshare/tree/e6ab6ed8ade7a246e2e5746010ff0a7e88efecca
 临时测试资料已由 Verify 脚本删除；录制时另准备原创 PDF 和允许分享的图片。
 
 0:00–0:20  自我介绍与用途
@@ -35,8 +37,8 @@ English cue: “The original description is retained. This translation comes fro
 未配置密钥时按钮禁用的截图不能证明第二个高级功能完成。
 
 3:10–4:10  GitHub 与 Azure DevOps
-展示自己的 GitHub 仓库和对应 commit。
-进入 Azure DevOps 的真实成功运行，展示 Node.js、依赖安装、测试、前端构建，以及 bookshare-frontend 产物。
+打开上方代码提交链接，展示与成功构建对应的 e6ab6ed8；这条实际运行由 GitHub 提交自动触发。
+打开成功构建 20261026.2（总耗时 28 秒）。点击 Job 展示 Node.js、依赖安装、测试和前端构建的成功步骤，再点 1 published 查看 bookshare-frontend 产物。测试步骤日志中核对通过数量；仅展示总览绿色勾不能替代详细镜头。
 English cue: “This pipeline builds the frontend from the GitHub commit shown here, runs the tests, and publishes the deployable static site.”
 本地 npm build、单独的 YAML 文件、测试模拟均不能替代这一步。
 

@@ -1,0 +1,74 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": {"type": "string", "defaultValue": "[resourceGroup().location]"},
+    "prefix": {"type": "string", "defaultValue": "bookshare", "minLength": 3, "maxLength": 10},
+    "translatorSku": {"type": "string", "defaultValue": "F0", "allowedValues": ["F0", "S1"], "metadata": {"description": "F0 can be unavailable if the subscription already has a free Translator resource. Review cost before using S1."}}
+  },
+  "variables": {
+    "suffix": "[substring(uniqueString(resourceGroup().id), 0, 8)]",
+    "storage": "[toLower(concat(parameters('prefix'), variables('suffix')))]",
+    "cosmos": "[toLower(concat(parameters('prefix'), '-', variables('suffix'), '-db'))]",
+    "plan": "[concat(parameters('prefix'), '-', variables('suffix'), '-plan')]",
+    "function": "[concat(parameters('prefix'), '-', variables('suffix'), '-api')]",
+    "translator": "[concat(parameters('prefix'), '-', variables('suffix'), '-translator')]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Storage/storageAccounts", "apiVersion": "2023-05-01", "name": "[variables('storage')]", "location": "[parameters('location')]",
+      "sku": {"name": "Standard_LRS"}, "kind": "StorageV2",
+      "properties": {"minimumTlsVersion": "TLS1_2", "supportsHttpsTrafficOnly": true, "allowBlobPublicAccess": false, "allowSharedKeyAccess": true, "publicNetworkAccess": "Enabled"}
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts/blobServices", "apiVersion": "2023-05-01", "name": "[concat(variables('storage'), '/default')]",
+      "dependsOn": ["[resourceId('Microsoft.Storage/storageAccounts', variables('storage'))]"],
+      "properties": {"deleteRetentionPolicy": {"enabled": true, "days": 7}}
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts/blobServices/containers", "apiVersion": "2023-05-01", "name": "[concat(variables('storage'), '/default/assets')]",
+      "dependsOn": ["[resourceId('Microsoft.Storage/storageAccounts/blobServices', variables('storage'), 'default')]"], "properties": {"publicAccess": "None"}
+    },
+    {
+      "type": "Microsoft.DocumentDB/databaseAccounts", "apiVersion": "2024-05-15", "name": "[variables('cosmos')]", "location": "[parameters('location')]", "kind": "GlobalDocumentDB",
+      "properties": {"databaseAccountOfferType": "Standard", "capabilities": [{"name": "EnableServerless"}], "locations": [{"locationName": "[parameters('location')]", "failoverPriority": 0}], "consistencyPolicy": {"defaultConsistencyLevel": "Session"}, "enableAutomaticFailover": false, "publicNetworkAccess": "Enabled", "minimalTlsVersion": "Tls12"}
+    },
+    {
+      "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases", "apiVersion": "2024-05-15", "name": "[concat(variables('cosmos'), '/bookshare')]",
+      "dependsOn": ["[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmos'))]"], "properties": {"resource": {"id": "bookshare"}, "options": {}}
+    },
+    {
+      "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers", "apiVersion": "2024-05-15", "name": "[concat(variables('cosmos'), '/bookshare/assets')]",
+      "dependsOn": ["[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases', variables('cosmos'), 'bookshare')]"],
+      "properties": {"resource": {"id": "assets", "partitionKey": {"paths": ["/id"], "kind": "Hash", "version": 2}, "indexingPolicy": {"indexingMode": "consistent", "automatic": true, "includedPaths": [{"path": "/*"}], "excludedPaths": [{"path": "/\"_etag\"/?"}]}}, "options": {}}
+    },
+    {
+      "type": "Microsoft.Web/serverfarms", "apiVersion": "2023-12-01", "name": "[variables('plan')]", "location": "[parameters('location')]", "kind": "functionapp", "sku": {"name": "Y1", "tier": "Dynamic"}, "properties": {"reserved": false}
+    },
+    {
+      "type": "Microsoft.Web/sites", "apiVersion": "2023-12-01", "name": "[variables('function')]", "location": "[parameters('location')]", "kind": "functionapp",
+      "dependsOn": ["[resourceId('Microsoft.Web/serverfarms', variables('plan'))]", "[resourceId('Microsoft.Storage/storageAccounts', variables('storage'))]"],
+      "properties": {
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('plan'))]", "httpsOnly": true,
+        "siteConfig": {"minTlsVersion": "1.2", "ftpsState": "Disabled", "use32BitWorkerProcess": false, "appSettings": [
+          {"name": "AzureWebJobsStorage", "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storage'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storage')), '2023-05-01').keys[0].value, ';EndpointSuffix=', environment().suffixes.storage)]"},
+          {"name": "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING", "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storage'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storage')), '2023-05-01').keys[0].value, ';EndpointSuffix=', environment().suffixes.storage)]"},
+          {"name": "WEBSITE_CONTENTSHARE", "value": "[toLower(variables('function'))]"},
+          {"name": "FUNCTIONS_EXTENSION_VERSION", "value": "~4"}, {"name": "FUNCTIONS_WORKER_RUNTIME", "value": "node"}, {"name": "WEBSITE_NODE_DEFAULT_VERSION", "value": "~22"},
+          {"name": "SCM_DO_BUILD_DURING_DEPLOYMENT", "value": "true"}, {"name": "ALLOWED_ORIGINS", "value": ""}
+        ]}
+      }
+    },
+    {
+      "type": "Microsoft.CognitiveServices/accounts", "apiVersion": "2023-05-01", "name": "[variables('translator')]", "location": "[parameters('location')]", "kind": "TextTranslation", "sku": {"name": "[parameters('translatorSku')]"}, "properties": {"publicNetworkAccess": "Enabled"}
+    }
+  ],
+  "outputs": {
+    "storageName": {"type": "string", "value": "[variables('storage')]"},
+    "cosmosName": {"type": "string", "value": "[variables('cosmos')]"},
+    "functionName": {"type": "string", "value": "[variables('function')]"},
+    "translatorName": {"type": "string", "value": "[variables('translator')]"},
+    "workflowPrefix": {"type": "string", "value": "[concat(parameters('prefix'), '-', variables('suffix'))]"},
+    "apiOrigin": {"type": "string", "value": "[concat('https://', reference(resourceId('Microsoft.Web/sites', variables('function')), '2023-12-01').defaultHostName)]"}
+  }
+}

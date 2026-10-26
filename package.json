@@ -1,0 +1,26 @@
+{
+  "name": "azure-bookshare",
+  "version": "1.0.0",
+  "private": true,
+  "main": "server/azure-entry.cjs",
+  "description": "BookShare multimedia platform for the Azure Coursework 1 and 2 briefs",
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "scripts": {
+    "start": "node server/local.cjs",
+    "build": "node scripts/build.cjs",
+    "test": "node --test tests/*.test.cjs",
+    "check": "node scripts/check.cjs",
+    "test:ci": "node --test --test-reporter=junit --test-reporter-destination=reports/junit.xml tests/*.test.cjs",
+    "prestart": "node scripts/prepare-vendor.cjs",
+    "pretest": "node scripts/prepare-vendor.cjs",
+    "pretest:ci": "node scripts/prepare-vendor.cjs"
+  },
+  "dependencies": {
+    "@azure/functions": "^4.0.0"
+  },
+  "devDependencies": {
+    "pdfjs-dist": "6.4.299"
+  }
+}

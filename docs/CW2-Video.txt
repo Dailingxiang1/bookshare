@@ -1,0 +1,55 @@
+BookShare — Coursework 2 video preparation
+Student: 祝德阳 202315030125
+
+录制目标：一段不超过 5 分钟的个人演示，展示真实 Azure 部署、完整 CRUD、GitHub -> Azure DevOps 构建和两个高级功能。
+当前状态（2026-10-26）：Azure 部署完成，两个连接 Connected，六个工作流 Enabled/Succeeded，15 项真实云端 HTTP 检查通过；GitHub/Azure DevOps 构建、浏览器/Portal 证据核对与本人视频待完成。
+实际网站：https://booksharenpvsnrw3.z28.web.core.windows.net
+公开 API：https://bookshare-npvsnrw3-api.azurewebsites.net
+GitHub：https://github.com/Dailingxiang1/bookshare
+临时测试资料已由 Verify 脚本删除；录制时另准备原创 PDF 和允许分享的图片。
+
+0:00–0:20  自我介绍与用途
+出镜说出姓名、学号和项目用途，展示实际 Azure 静态网站。
+English cue: “I am Zhu Deyang, student number 202315030125. BookShare lets a university reading group share authorised book covers and original PDF notes.”
+
+0:20–0:45  实际 Azure 资源
+Portal 中展示本项目资源组：Storage、Cosmos DB for NoSQL、六条 Logic Apps、Function、Translator。
+说明二进制文件在 Blob，元数据在 Cosmos，分区键为 /id。
+不要显示账号密钥、签名 query、管理口令。
+
+0:45–1:40  Create / Retrieve
+上传一份事先准备的原创 PDF。展示文件类型、大小检查与 SHA-256。
+在网页打开资料详情，预览 PDF 并下载。
+对应展示 IUPS 成功运行、Blob 文件、Cosmos JSON 文档。
+展示实际 Function API 地址，如 /api/assets 和 /api/assets/{id}，避免展示签名凭据。
+
+1:40–2:20  Update / Delete
+修改资料标题或说明，刷新验证保存。
+删除专门用于本次演示的一份资料，展示列表消失、Cosmos 记录和 Blob 文件都移除。
+对应展示 UIPS / DIPS 的实际成功运行。
+
+2:20–3:10  两个高级功能
+1. Azure Function：展示 /api/analyze 的真实返回，解释文件头、尺寸、SHA-256 和写权限检查。
+2. Azure AI Translator：实际点击译文按钮，展示当前 Azure 服务返回的译文。
+English cue: “The original description is retained. This translation comes from Azure AI Translator and is offered as a reading aid.”
+未配置密钥时按钮禁用的截图不能证明第二个高级功能完成。
+
+3:10–4:10  GitHub 与 Azure DevOps
+展示自己的 GitHub 仓库和对应 commit。
+进入 Azure DevOps 的真实成功运行，展示 Node.js、依赖安装、测试、前端构建，以及 bookshare-frontend 产物。
+English cue: “This pipeline builds the frontend from the GitHub commit shown here, runs the tests, and publishes the deployable static site.”
+本地 npm build、单独的 YAML 文件、测试模拟均不能替代这一步。
+
+4:10–4:50  设计变化、限制和结束
+说明 CW1 核心是 Labs 1–6 的静态网站、Logic Apps、Blob、Cosmos。
+CW2 加了 Function 网关隐藏签名回调、检查管理口令和文件；实际 CRUD 仍由 Logic Apps 完成。
+补充一个真实限制：共享口令不是逐用户权限；大目录需要分页；跨存储失败需要清理。
+English cue: “The Function gateway is an extension to the CW1 core design. All cloud CRUD operations still run through the Logic Apps workflows.”
+留 10 秒缓冲，确保总长不超过 5 分钟。
+
+录制前检查
+- 所有资源为本人可访问的真实 Azure 资源。
+- 视频中的 CRUD、Translator、Pipeline 都在录制前实际运行成功。
+- 不公开密码、服务密钥、管理口令和签名凭据。
+- 说明中的姓名学号、实际网址、GitHub commit 和 Pipeline 对得上。
+- 按 Blackboard 要求上传视频，并核对课程平台的截止时间和时区。

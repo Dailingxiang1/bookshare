@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>BookShare 账号与部署说明</title>
+<style>body{margin:0;background:#f5f6f0;color:#243b33;font:16px/1.85 'Segoe UI','Microsoft YaHei',sans-serif}main{max-width:980px;margin:auto;padding:48px 26px 80px}h1{font-size:34px;line-height:1.35}h2{font-size:24px;margin-top:44px}h3{font-size:19px;margin-top:28px}p{margin:12px 0}a{color:#216c50}table{border-collapse:collapse;width:100%;background:white;margin:20px 0}td,th{padding:13px 16px;border:1px solid #dae2d8;text-align:left}th{background:#e8eee5}pre{background:#233e33;color:#f2f6f1;padding:19px;white-space:pre-wrap;overflow-wrap:anywhere;border-radius:6px;font:14px/1.8 Consolas,monospace}code{font-family:Consolas,monospace}.lead{font-size:20px}.status{border-left:4px solid #38785a;padding:12px 20px;background:#e8f0e5}.muted{color:#748276;font-size:13px}li{margin:7px 0}nav a{display:inline-block;margin-right:23px}@media(max-width:600px){main{padding:28px 18px}h1{font-size:28px}td,th{font-size:13px;padding:9px}}</style></head><body><main>
+<p class="muted">BookShare / Coursework 1 &amp; Coursework 2 / 祝德阳 202315030125</p>
+<h1>一套账号，完成同一个项目的两份作业</h1>
+<p class="lead">CW1 交设计 PPT，CW2 实现并部署 CW1 的设计。两者共用一个 Azure 订阅、一个 GitHub 账号和一个 Azure DevOps 组织即可。</p>
+<nav><a href="#accounts">账号怎么开</a><a href="#local">本地使用</a><a href="#cloud">云端部署</a><a href="#evidence">提交前验证</a></nav>
+<table><tr><th>场景</th><th>需要多少账号</th></tr><tr><td>同一个人完成 CW1 + CW2</td><td>一套即可。Azure 与 Azure DevOps 可用同一个 Microsoft 账号登录，再注册一个 GitHub 账号。</td></tr><tr><td>同一个人试做两个不同选题</td><td>可共享同一个订阅。分别使用资源组、GitHub 仓库和 Pipeline，费用合计使用同一份额度。</td></tr><tr><td>两位同学各交一套独立作业</td><td>建议各用自己的账号和订阅，分别保留本人部署、提交和流水线证据。</td></tr></table>
+<div class="status"><strong>2026-10-26 部署状态：</strong>BookShare 已部署到 France Central，两个 API 连接已连通，六个工作流已启用。学生在 Cloud Shell 执行的 15 项真实 HTTP 检查通过，覆盖 CRUD、文件字节、Function 检查与 Translator。公网网页、健康接口、跨域预检和 PDF.js 资源也已检查通过。GitHub / Azure DevOps 构建、浏览器预览及 Portal 证据核对、本人视频待完成。<br><a href="https://booksharenpvsnrw3.z28.web.core.windows.net">打开实际网站</a> · <a href="https://bookshare-npvsnrw3-api.azurewebsites.net/api/health">健康接口</a> · <a href="https://github.com/Dailingxiang1/bookshare">目标 GitHub 仓库</a></div>
+
+<h2 id="accounts">先开通账号，按这个顺序</h2>
+<h3>1. Azure 学生订阅</h3>
+<p>访问 <a href="https://azure.microsoft.com/en-us/free/students/">Azure for Students 官方入口</a>，用你自己的 Microsoft 账号登录，按页面要求完成学生身份验证。Microsoft 当前说明提供 100 美元额度、有效期 12 个月，无需信用卡，具体资格以验证页面为准。</p>
+<p>登录 <a href="https://portal.azure.com/">Azure Portal</a>，进入“订阅”，确认能看到已启用的学生订阅。如果学生认证无法通过，先询问任课老师是否提供教学订阅或实验账号。暂时不用购买付费订阅。</p>
+<h3>2. 免费 GitHub 账号与仓库</h3>
+<p>在 <a href="https://github.com/signup">GitHub</a> 注册自己的账号，创建一个 <code>bookshare</code> 仓库。当前目标为 <a href="https://github.com/Dailingxiang1/bookshare">Dailingxiang1/bookshare</a>。仓库根目录放本项目的 <code>package.json</code>、<code>web</code>、<code>server</code> 和 <code>azure-pipelines.yml</code> 等文件。保留 <code>.gitignore</code>，不要上传 <code>.local</code>、<code>node_modules</code> 或云端密钥。</p>
+<h3>3. Azure DevOps 组织与项目</h3>
+<p>访问 <a href="https://dev.azure.com/">Azure DevOps</a>，使用 Azure 所用的 Microsoft 账号登录，创建一个组织和一个项目（例如 <code>BookShare</code>）。按当前 Microsoft 流程，新建组织需要有效 Azure 订阅；学生订阅可用于创建组织。参考 <a href="https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/create-organization?view=azure-devops">创建组织</a> 和 <a href="https://learn.microsoft.com/en-us/azure/devops/organizations/billing/billing-faq?view=azure-devops">订阅资格说明</a>。</p>
+<p>在组织设置的 Billing 中连接学生订阅，按页面启用免费托管并行作业额度。是否已获额度以组织实际显示为准；没有额度时先按学校说明处理，不要直接购买并行作业。官方说明：<a href="https://learn.microsoft.com/en-us/azure/devops/pipelines/licensing/concurrent-jobs?view=azure-devops-2022">并行作业与免费额度</a>。</p>
+<p>上述账号注册、密码设置、验证码和学生验证由你在官方页面自行完成。无需把密码、验证码或完整密钥发给任何人。</p>
+
+<h2 id="local">现在就能使用本地网页</h2>
+<p>在项目目录执行以下命令，保持终端开启，然后打开 <a href="http://127.0.0.1:7073">本机 BookShare 网页</a>。需要 Node.js 22.13 或更高版本。</p>
+<pre>npm ci
+npm start</pre>
+<p>网页可上传 PDF / PNG / JPEG，进行搜索、分类、排序、预览、下载、修改及删除。PDF 使用本地打包的 Mozilla PDF.js 渲染，支持翻页。首次启动生成三份原创示例笔记。数据放在 <code>.local</code>，不会上传到外部服务。</p>
+<p>本机页面明确显示“本机演示”。未配置 Azure Translator 时，翻译按钮禁用。没有使用伪造译文或假云端数据。</p>
+<pre>npm run check
+npm test
+npm run test:ci
+npm run build</pre>
+<p>构建产物位于 <code>dist</code>，包括四个网页入口文件和本地 PDF.js 资源。<code>reports/junit.xml</code> 是本机测试结果，不能替代实际 Azure DevOps 的成功运行记录。</p>
+
+<h2 id="cloud">当前部署与分阶段脚本</h2>
+<p>这次已在 Azure for Students 的 <code>bookshare-coursework</code> 资源组完成部署，实际资源位于 <code>francecentral</code>。资源组元数据位置为 East US，与各资源实际位置独立。以下为复现和维护步骤；当前部署继续使用已有资源。</p>
+<h3>A. 选择订阅、区域与预算</h3>
+<pre>az login
+az account show
+az account set --subscription YOUR_SUBSCRIPTION_ID</pre>
+<p>选择该学生订阅实际允许的区域，资源组使用项目专用名称，例如 <code>bookshare-coursework</code>。模板使用 Standard LRS Storage、Cosmos NoSQL serverless、Windows Consumption Function 和 Translator F0。F0 已占用时会失败，不会自动切换到收费 S1。消费型资源仍可能消耗学生额度，应在 Cost Management 中设置资源组预算提醒。</p>
+<h3>B. 部署基础资源</h3>
+<pre># 请把 eastus 换成该学生订阅实际允许的区域
+./scripts/Deploy-Resources.ps1 -ResourceGroup bookshare-coursework -Location eastus -Apply
+
+# 资源组已经存在时，可先进行 Validate / what-if
+./scripts/Deploy-Resources.ps1 -ResourceGroup bookshare-coursework -Location eastus</pre>
+<p>模板 <code>infra/main.json</code> 创建私有 <code>assets</code> 容器、Cosmos <code>bookshare/assets</code>（NoSQL API，分区键 <code>/id</code>）、Function 及 Translator。订阅服务策略造成失败时，应查看明确报错后调整区域或申请课程资源，不要换成 MongoDB API。</p>
+<h3>C–D. Cloud Shell 连接与六条工作流</h3>
+<p>在 Cloud Shell（PowerShell）上传交付目录中的 <code>BookShare_CloudShell_v3.zip</code>，解压到 <code>$HOME/bookshare-deploy</code>。脚本会从已有成功部署读取资源信息，读取实际 Connector 认证元数据，以 <code>export=true</code> 导出真实 Swagger，再生成连接与工作流。</p>
+<pre>Expand-Archive -LiteralPath "$HOME/BookShare_CloudShell_v3.zip" -DestinationPath "$HOME/bookshare-deploy" -Force
+&amp; "$HOME/bookshare-deploy/scripts/Deploy-CloudShell.ps1" -Stage Workflows -Apply</pre>
+<p>当前两个连接已为 Connected，IUPS、RAI、RIPS、UIPS、DIPS、FIPS 全部为 Enabled / Succeeded。全部云端 CRUD 由 Logic Apps 完成，Function 调用签名回调。连接密钥由 Azure 的 listKeys 表达式解析。</p>
+<h3>E. 发布与真实检查</h3>
+<pre>&amp; "$HOME/bookshare-deploy/scripts/Deploy-CloudShell.ps1" -Stage Publish -Apply
+&amp; "$HOME/bookshare-deploy/scripts/Deploy-CloudShell.ps1" -Stage Verify -Apply</pre>
+<p>发布脚本将基础回调地址与 <code>relativePath</code> 合并，保留原签名查询串；然后配置 Function、Translator、网站精确 Origin 并发布代码。Verify 已在当前 Azure 部署通过 15 项检查，使用并清除自己的临时 PDF；检查报告位于 Cloud Shell 的 <code>$HOME/bookshare-deploy/reports/cloud-smoke.json</code>。</p>
+<p>管理口令保存在 Cloud Shell 的 <code>$HOME/bookshare-deploy/.local/cloud/organiser-token.local.txt</code>。在网页“管理入口”输入该口令即可写入。口令、密钥和签名回调保留在 Function 配置与忽略的本地目录中。测试后的空目录属于正常状态，演示时请上传原创资料。</p>
+<h3>F. GitHub 连接 Azure DevOps Pipeline</h3>
+<ol><li>把本项目源码提交到自己的 GitHub 仓库。仓库根目录必须包含 <code>azure-pipelines.yml</code>。</li><li>Azure DevOps 项目进入 Pipelines → New pipeline → GitHub，按页面授权该仓库。</li><li>选择 Existing Azure Pipelines YAML file，选择 <code>/azure-pipelines.yml</code>，保存并运行。</li><li>确认 Node 安装、<code>npm ci</code>、语法检查、测试、前端构建均成功，能下载 <code>bookshare-frontend</code> 产物。</li><li>保存实际运行页面和对应 GitHub commit。只有 YAML 文件、静态截图或本机 npm build 均不能证明流水线已工作。</li></ol>
+<p>课程要求的核心是 GitHub 到 Azure DevOps 的实际前端构建。自动部署可作为后续扩展，不必为了完成基本项额外购买服务。</p>
+
+<h2 id="evidence">CW2 提交前必须真实验证</h2>
+<ol><li>云端网址能打开，页脚显示云端空间。刷新后资料依然存在。</li><li>上传一份原创 PDF 和一张允许分享的 PNG / JPEG，验证预览、下载字节与元数据。</li><li>修改标题和说明。删除一份专门的演示文件，确认 Cosmos 记录及 Blob 都已移除。</li><li>在 Portal 展示 IUPS / RIPS / UIPS / DIPS 成功的实际运行记录，说明 API URI 与分区键。</li><li>实际调用 Azure Function 文件检查接口，展示大小和 SHA-256；实际点击描述翻译并展示真实 Azure Translator 结果。</li><li>展示 GitHub commit 与成功的 Azure DevOps 前端构建，解释 Function 网关相对 CW1 核心架构的增加。</li><li>本人录制不超过 5 分钟的演示视频。录制安排见 <code>CW2-Video.txt</code>，不要把签名、密钥或管理口令录进去。</li></ol>
+<p>CW1 的 PPT 已覆盖 15 页设计内容及额外的原文提交检查表。BookShare 已完成 Azure 部署和 HTTP 功能验证；CW2 还需保留真实 Pipeline 构建、浏览器预览和 Portal 运行证据，并由本人完成视频。</p>
+
+<h2>实现边界与后续改进</h2>
+<p>每份文件不超过 5 MiB。当前列表以 100 条 Connector 页面为目标，最多跟进 20 页，超过上限返回明确错误。大型目录需要游标分页和服务器搜索。修改仅更新元数据，文件替换通过新建资料完成。Blob 和 Cosmos 没有跨服务事务，失败的回滚或删除需要检查工作流并清理孤立文件。共享口令适合小型演示，正式多用户系统应增加身份、角色、审核和病毒扫描。</p>
+
+<h2>官方技术来源</h2>
+<ul><li><a href="https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blob-static-website">Storage 静态网站</a>、<a href="https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blobs-introduction">Blob Storage</a></li><li><a href="https://learn.microsoft.com/en-us/azure/cosmos-db/serverless">Cosmos serverless</a>、<a href="https://learn.microsoft.com/en-us/azure/cosmos-db/partitioning">分区</a></li><li><a href="https://learn.microsoft.com/en-us/connectors/documentdb/">Cosmos Connector</a>、<a href="https://learn.microsoft.com/en-us/connectors/azureblob/">Blob Connector</a>、<a href="https://learn.microsoft.com/en-us/rest/api/appservice/managed-apis/get?view=rest-appservice-2016-06-01">Managed API 元数据</a></li><li><a href="https://learn.microsoft.com/en-us/azure/azure-functions/functions-reference-node">Azure Functions Node.js</a>、<a href="https://learn.microsoft.com/en-us/azure/ai-services/translator/text-translation/reference/v3/translate">Translator Translate API</a></li><li><a href="https://mozilla.github.io/pdf.js/examples/">Mozilla PDF.js</a>，Apache-2.0，本项目使用版本 6.4.299。</li></ul>
+<p class="muted">核对日期：2026-10-26。价格、区域、免费额度及账号创建流程以账户当时显示和 Microsoft 官方说明为准。</p>
+</main></body></html>

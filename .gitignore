@@ -1,0 +1,10 @@
+node_modules/
+functions/node_modules/
+.local/
+dist/
+.tools/
+reports/
+functions/local.settings.json
+infra/*.local.json
+*.log
+web/vendor/
